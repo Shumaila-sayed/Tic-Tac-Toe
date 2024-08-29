@@ -5,7 +5,7 @@ const Gameboard = (() => {
     return {
         reset() {
             board = Array(9).fill(""); // Clear the board
-            Display.update(); // Tell the Display to update
+            Display.update(); 
         },
         getBoard() {
             return board; // Show the current state of the board
@@ -27,7 +27,7 @@ const Gameboard = (() => {
 
 // Game module
 const Game = (() => {
-    let currentMarker = 'X'; // Start with 'X'
+    let currentMarker = 'X'; 
 
     function switchMarker() {
         currentMarker = currentMarker === 'X' ? 'O' : 'X'; // Change to the other marker
@@ -53,39 +53,32 @@ const Game = (() => {
     }
 
     function gameFlow(index) {
-        const board = Gameboard.getBoard(); // Get the current board
-        const validMove = Gameboard.update(index, currentMarker); // Try to make the move
-
-        if (validMove) { // If the move was successful
-            const winner = checkWinner(board); // Check if there's a winner
+        const board = Gameboard.getBoard(); // Current board
+        if (Gameboard.update(index, currentMarker)) { // Update board
+            const winner = checkWinner(board); 
             if (winner) {
-                Display.showDialog(`${winner} wins!`); // Show the winner
-                return;
+                Display.showDialog(`${winner} wins!`); 
+            } else if (checkTie(board)) {
+                Display.showDialog("It's a tie!"); 
+            } else {
+                switchMarker(); 
+                Display.updateMarkerDisplay(currentMarker); 
             }
-
-            if (checkTie(board)) {
-                Display.showDialog("It's a tie!"); // Show if it's a tie
-                return;
-            }
-
-            switchMarker(); // Switch to the next player's turn
-            Display.updateMarkerDisplay(currentMarker); // Update the display with the current marker
         }
     }
-
     return { gameFlow };
 })();
 
 
 // Display module
 const Display = (() => {
-    const container = document.querySelector('.container'); // The board area
-    const dialog = document.getElementById('dialog'); // The dialog box
-    const dialogMessage = document.getElementById('dialog-message'); // The message in the dialog
-    const restartButton = document.getElementById('restart-button'); // Button to restart the game
-    const closeButton = document.getElementById('close-dialog'); // Button to close the dialog
-    const markerX = document.getElementById('x-mark'); // The 'X' marker display
-    const markerO = document.getElementById('o-mark'); // The 'O' marker display
+    const container = document.querySelector('.container'); 
+    const dialog = document.getElementById('dialog'); 
+    const dialogMessage = document.getElementById('dialog-message');
+    const restartButton = document.getElementById('restart-button'); 
+    const closeButton = document.getElementById('close-dialog'); 
+    const markerX = document.getElementById('x-mark'); 
+    const markerO = document.getElementById('o-mark'); 
 
     function update() {
         const cells = document.querySelectorAll('.cell'); // Get all board cells
@@ -95,12 +88,12 @@ const Display = (() => {
     }
 
     function updateMarkerDisplay(marker) {
-        markerX.classList.toggle('active', marker === 'X'); // Highlight 'X'
-        markerO.classList.toggle('active', marker === 'O'); // Highlight 'O'
+        markerX.classList.toggle('active', marker === 'X'); 
+        markerO.classList.toggle('active', marker === 'O'); 
     }
 
     function showDialog(message) {
-        dialogMessage.textContent = message; // Show the message
+        dialogMessage.textContent = message; 
         dialog.style.display = 'flex'; // Make the dialog visible
     }
 
@@ -117,25 +110,25 @@ const Display = (() => {
         });
 
         restartButton.addEventListener('click', () => {
-            Gameboard.reset(); // Reset the game
-            updateMarkerDisplay('X'); // Start with 'X'
-            hideDialog(); // Hide the dialog
+            Gameboard.reset();
+            updateMarkerDisplay('X'); 
+            hideDialog(); 
         });
 
         closeButton.addEventListener('click', () => {
-            hideDialog(); // Just hide the dialog
-            Gameboard.reset(); // Reset the game
+            hideDialog(); 
+            Gameboard.reset(); 
 
         });
     }
 
     function init() {
-        setupEventListeners(); // Set up event listeners for clicks
-        updateMarkerDisplay('X'); // Start with 'X'
+        setupEventListeners(); 
+        updateMarkerDisplay('X');
         for (let i = 0; i < 9; i++) {
-            const cell = document.createElement('div'); // Create a new cell
-            cell.className = 'cell'; // Set its class
-            cell.dataset.index = i; // Set its index
+            const cell = document.createElement('div'); 
+            cell.className = 'cell'; 
+            cell.dataset.index = i; 
             container.appendChild(cell); // Add it to the board
         }
     }
