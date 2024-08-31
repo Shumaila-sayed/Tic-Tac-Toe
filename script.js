@@ -16,6 +16,7 @@ const Gameboard = (() => {
                 Display.update(); // Tell the Display to update
                 return true; // The move was successful
             }
+            // prevents unexpected things such as marking on already taken place
             return false; // The move was not allowed
         },
         getCellMarker(index) {
@@ -43,7 +44,7 @@ const Game = (() => {
         for (const [a, b, c] of patterns) {
             if (board[a] && board[a] === board[b] && board[a] === board[c]) {
                 return board[a]; // Who is the winner ('X' or 'O')
-            }
+            } 
         }
         return null; // No winner yet
     }
@@ -54,19 +55,30 @@ const Game = (() => {
 
     function gameFlow(index) {
         const board = Gameboard.getBoard(); // Current board
+        // if updating is sucessfull check winner function
         if (Gameboard.update(index, currentMarker)) { // Update board
             const winner = checkWinner(board); 
+            // if winner is true show winner and if its false check for the tie
+            // switch marker if there's no winner and if tiles are empty
             if (winner) {
                 Display.showDialog(`${winner} wins!`); 
+                currentMarker = 'X';
             } else if (checkTie(board)) {
                 Display.showDialog("It's a tie!"); 
+                currentMarker = 'X';
             } else {
                 switchMarker(); 
                 Display.updateMarkerDisplay(currentMarker); 
             }
         }
     }
-    return { gameFlow };
+    function resetGame() {
+        Gameboard.reset();
+        currentMarker = 'X'; // Ensure that 'X' is the first marker after reset
+        Display.updateMarkerDisplay(currentMarker); 
+    }
+
+    return { gameFlow, resetGame};
 })();
 
 
@@ -101,6 +113,13 @@ const Display = (() => {
         dialog.style.display = 'none'; // Hide the dialog
     }
 
+    function resetAll() {
+        Gameboard.reset();
+        Game.resetGame(); 
+        updateMarkerDisplay('X');
+        hideDialog(); 
+    }
+
     function setupEventListeners() {
         container.addEventListener('click', (event) => {
             if (event.target.classList.contains('cell')) {
@@ -109,17 +128,8 @@ const Display = (() => {
             }
         });
 
-        restartButton.addEventListener('click', () => {
-            Gameboard.reset();
-            updateMarkerDisplay('X'); 
-            hideDialog(); 
-        });
-
-        closeButton.addEventListener('click', () => {
-            hideDialog(); 
-            Gameboard.reset(); 
-
-        });
+        restartButton.addEventListener('click', resetAll);
+        closeButton.addEventListener('click', resetAll);
     }
 
     function init() {
@@ -132,7 +142,6 @@ const Display = (() => {
             container.appendChild(cell); // Add it to the board
         }
     }
-
     return { update, updateMarkerDisplay, showDialog, init };
 })();
 
