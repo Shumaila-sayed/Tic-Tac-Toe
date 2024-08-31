@@ -88,7 +88,6 @@ span {
   background-color: rgb(173, 51, 51);
 }
 
-/* Dialog box styles */
 .dialog {
   display: none; /* Hidden by default */
   position: fixed;
@@ -144,4 +143,8 @@ span {
       opacity: 1;
       transform: scale(1);
   }
+}
+
+footer {
+  margin-top: 4em;
 }
