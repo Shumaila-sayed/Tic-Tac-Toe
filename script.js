@@ -114,9 +114,7 @@ const Display = (() => {
     }
 
     function resetAll() {
-        Gameboard.reset();
         Game.resetGame(); 
-        updateMarkerDisplay('X');
         hideDialog(); 
     }
 
